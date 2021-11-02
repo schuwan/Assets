@@ -1,0 +1,51 @@
+version: "3.5"
+services:
+  angular:
+    image: ghcr.io/revature-reverse/angular:latest
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.rev-angular.rule=HostRegexp(`{host:.*}`)"
+  discovery:
+    image: ghcr.io/revature-reverse/discovery:latest
+    restart: unless-stopped
+    environment:
+      EUREKA_URI: 'http://discovery:8083/eureka'
+  gateway:
+    image: ghcr.io/revature-reverse/gateway:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.rev-gateway.rule=HostRegexp(`{host:.*}`) && PathPrefix(`/backend`)"
+      - "traefik.http.routers.rev-gateway.middlewares=rev-gateway-prefixes"
+      - "traefik.http.middlewares.rev-gateway-prefixes.stripprefix.prefixes=/backend"
+    environment:
+      EUREKA_URI: 'http://discovery:8083/eureka'
+    depends_on:
+      - discovery
+  user-service:
+    image: ghcr.io/revature-reverse/user-service:latest
+    restart: unless-stopped
+    environment:
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      SECRET: ${SECRET}
+      EUREKA_URI: 'discovery:8083'
+  post-service:
+    image: ghcr.io/revature-reverse/post-service:latest
+    restart: unless-stopped
+    environment:
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      EUREKA_URI: 'discovery:8083'
+  proxy:
+    image: traefik
+    restart: unless-stopped
+    volumes:
+      - ./traefik.yml:/etc/traefik/traefik.yml
+      - './traefik:/traefik'
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "80:80"
+      - "443:443"

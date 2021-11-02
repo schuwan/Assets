@@ -1,0 +1,20 @@
+http:
+  routers:
+    to-dash:
+      rule: "HostRegexp(`{host:.*}`) && PathPrefix(`/traefik`)"
+      service: api@internal
+      middlewares:
+        - dashboard-auth
+        - dashboard-trim-prefix
+    to-api:
+      rule: "Host(`app.localhost`) && PathPrefix(`/api`)"
+      service: api@internal
+  middlewares:
+    dashboard-auth:
+      basicauth:
+        users:
+          - "admin:$2y$10$ovuaSBWmofV8y3g/.ZDDkebZ4BPlYFqVYGl2pHLqxWgK6hZiBiwQ2"
+    dashboard-trim-prefix:
+      stripPrefix:
+        prefixes:
+          - '/traefik'

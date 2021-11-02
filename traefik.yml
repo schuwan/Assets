@@ -1,0 +1,21 @@
+providers:
+  docker:
+    endpoint: 'unix:///var/run/docker.sock'
+    defaultRule: "Host(`{{ trimPrefix `/` .Name }}.docker.localhost`)"
+    exposedByDefault: false
+  file:
+    directory: '/traefik/config.d'
+    watch: true
+
+log:
+  level: "INFO"
+  
+entryPoints:
+  web:
+    address: ":80"
+  webSecure:
+    address: ":443"
+
+# API and dashboard configuration
+api:
+  insecure: false
