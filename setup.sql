@@ -107,6 +107,10 @@ create table if not exists users(
     foreign key (post_id) references posts(id)
     	on delete cascade
     	on update cascade
+		
+	foreign key (image_location) references image_locations(id) 
+    	on delete no action 
+    	on update cascade
     );
    
    
