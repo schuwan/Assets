@@ -155,6 +155,6 @@ create table if not exists users(
   	('DC Office', 'Reston', 'VA', 'USA'),
   	('New York Office', 'New York', 'NY', 'USA'),
   	('Dallas Office', 'Dallas', 'TX', 'USA'),
-  	('Olando Office', 'Orlando', 'FL', 'USA'),
-  	('West Virgina University', 'Morgantown', 'WV', 'USA')
+  	('Orlando Office', 'Orlando', 'FL', 'USA'),
+  	('West Virginia University', 'Morgantown', 'WV', 'USA')
   ;
