@@ -30,7 +30,7 @@ services:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       SECRET: ${SECRET}
-      EUREKA_URI: 'discovery:8083'
+      EUREKA_URI: 'http://discovery:8083/eureka'
   post-service:
     image: ghcr.io/revature-reverse/post-service:latest
     restart: unless-stopped
@@ -38,7 +38,7 @@ services:
       DB_URL: ${DB_URL}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
-      EUREKA_URI: 'discovery:8083'
+      EUREKA_URI: 'http://discovery:8083/eureka'
   proxy:
     image: traefik
     restart: unless-stopped
