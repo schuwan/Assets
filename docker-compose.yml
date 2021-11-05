@@ -57,6 +57,7 @@ services:
       - "traefik.http.routers.rev-portainer.rule=HostRegexp(`{host:.*}`) && PathPrefix(`/portainer`)"
       - "traefik.http.routers.rev-portainer.middlewares=rev-portainer-prefixes"
       - "traefik.http.middlewares.rev-portainer-prefixes.stripprefix.prefixes=/portainer"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
     volumes:
       - "portainer_data:/data"
       - "/var/run/docker.sock:/var/run/docker.sock"
