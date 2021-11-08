@@ -49,7 +49,7 @@ public class StorageExample {
          * The first variable is the bucket name, this will always be reverse-social-media for us
          * The second name is key/file name, this must be unique within a folder of the bucket
          * The third argument is the input stream
-         * The fourth is the meta data
+         * The fourth is the metadata
          */
 
         amazonS3.putObject("reverse-social-media", "test.png", in, meta);
