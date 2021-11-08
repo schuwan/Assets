@@ -11,6 +11,12 @@ services:
     restart: unless-stopped
     environment:
       EUREKA_URI: 'http://discovery:8083/eureka'
+      EUREKA_PATH: 'discovery'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.rev-discovery.rule=HostRegexp(`{host:.*}`) && (PathPrefix(`/eureka`) || PathPrefix(`/discovery`))"
+      - "traefik.http.routers.rev-discovery.middlewares=rev-discovery-auth"
+      - "traefik.http.middlewares.rev-discovery-auth.basicauth.users=${DISCOVERY_USER}"
   gateway:
     image: ghcr.io/revature-reverse/gateway:latest
     labels:
