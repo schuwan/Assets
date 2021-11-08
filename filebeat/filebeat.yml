@@ -1,0 +1,13 @@
+filebeat.inputs:
+  - type: container
+    enabled: true
+    paths:
+      - '/var/lib/docker/containers/*/*.log'
+
+output.elasticsearch:
+  hosts: [ "http://elasticsearch:9200" ]
+  username: 'elastic'
+  password: ${ELASTIC_PASSWORD}
+
+#output.logstash:
+#  hosts: [ 'logstash:5044' ]
