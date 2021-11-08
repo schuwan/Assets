@@ -91,6 +91,8 @@ services:
     volumes:
       # - './logging/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro'
       - "/var/lib/docker/containers:/var/lib/docker/containers:ro"
+    environment:
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
     
 
 volumes:
