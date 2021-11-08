@@ -12,7 +12,7 @@ drop table if exists genders cascade;
 create table if not exists image_locations(
 --  col_name              col_datatype     other_constraints
     id                    serial,
-    url                   varchar(200)     unique not null,
+    bucket_name           varchar(200)     unique not null,
     
     primary key(id)
     
@@ -30,12 +30,12 @@ create table if not exists genders(
 create table if not exists profile_pictures(
 --  col_name              col_datatype     other_constraints
    id                     serial,
-   image_location         int              not null,
+   bucket                 int              not null,
    image_name             varchar(50)      unique not null,
    
    primary key(id),
     
-    foreign key (image_location) references image_locations(id) 
+    foreign key (bucket) references image_locations(id) 
     	on delete no action 
     	on update cascade
    );
@@ -58,7 +58,7 @@ create table if not exists users(
     email                 varchar(150)     unique not null,
     first_name            varchar(50)      not null, 
     last_name             varchar(50)      not null,
-    passwrd               varchar(24)      not null,
+    passwrd               varchar(100)     not null,
     date_of_birth         timestamp        not null,
     gender                int              not null, 
     branch                int              not null, 
@@ -76,6 +76,7 @@ create table if not exists users(
         on delete set null
         on update cascade      
  	);
+	
  
  create table if not exists posts(
 --  col_name              col_datatype     other_constraints
@@ -98,7 +99,7 @@ create table if not exists users(
 --  col_name              col_datatype     other_constraints
     id                    serial,
     post_id               int,
-    image_location        int              not null,
+    bucket                int              not null,
     image_name            varchar(100)     unique not null,
     image_title           varchar(50), 
     
@@ -108,7 +109,7 @@ create table if not exists users(
     	on delete cascade
     	on update cascade,
 		
-	foreign key (image_location) references image_locations(id) 
+	foreign key (bucket) references image_locations(id) 
     	on delete no action 
     	on update cascade
     );
@@ -158,3 +159,4 @@ create table if not exists users(
   	('Orlando Office', 'Orlando', 'FL', 'USA'),
   	('West Virginia University', 'Morgantown', 'WV', 'USA')
   ;
+  insert into image_locations(bucket_name) values ('reverse-social-media');
