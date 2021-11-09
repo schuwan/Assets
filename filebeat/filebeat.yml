@@ -1,8 +1,21 @@
-filebeat.inputs:
-  - type: container
-    enabled: true
-    paths:
-      - '/var/lib/docker/containers/*/*.log'
+filebeat.config:
+  modules:
+    path: ${path.config}/modules.d/*.yml
+    reload.enabled: false
+
+filebeat.autodiscover:
+  providers:
+    - type: docker
+      hints.enabled: true
+
+processors:
+- add_cloud_metadata: ~
+
+#filebeat.inputs:
+#  - type: container
+#    enabled: true
+#    paths:
+#      - '/var/lib/docker/containers/*/*.log'
 
 output.elasticsearch:
   hosts: [ "http://elasticsearch:9200" ]
