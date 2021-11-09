@@ -49,6 +49,7 @@ services:
       AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
       AWS_SECRET_KEY: ${AWS_SECRET_KEY}
       EUREKA_URI: 'http://discovery:8083/eureka'
+      VALIDATION: 'http://user-service:8081/users/validate'
     depends_on:
       - discovery
   proxy:
