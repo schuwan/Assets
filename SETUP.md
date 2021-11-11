@@ -7,12 +7,12 @@
  - Docker
     - Docker Compose
 
-# Setting up enviorment
+# Setting up environment
 ## Database
 
 In order to create the schema needed for the application, you'll first want to log into your PostgreSql instance and run the `setup.sql` file. This file also contains some dummy data, to not include this data only run up to line 163 in the file.
 
-## Enviorment file
+## Environment file
 
 To keep our credentials secret we used an enviorment file we pass into docker-compose via the `--env-file` option. You can use the `example.env` file as a base. I'll explain all the properties you need to set.
 
