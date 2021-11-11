@@ -1,33 +1,42 @@
 version: "3.5"
 services:
+  # front end service
   angular:
     image: ghcr.io/revature-reverse/angular:latest
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.rev-angular.rule=HostRegexp(`{host:.*}`)"
+  # discovery service
   discovery:
     image: ghcr.io/revature-reverse/discovery:latest
     restart: unless-stopped
     environment:
       EUREKA_URI: 'http://discovery:8083/eureka'
+      # This tells what path the ui is on
       EUREKA_PATH: 'discovery'
     labels:
       - "traefik.enable=true"
+      # this sets a path to the discovery service dashboard. /discovery is the acctual dashboard /eureka is the static assets (html/css)
       - "traefik.http.routers.rev-discovery.rule=HostRegexp(`{host:.*}`) && (PathPrefix(`/eureka`) || PathPrefix(`/discovery`))"
+      # the next two lines adds basic auth to the dashboard
       - "traefik.http.routers.rev-discovery.middlewares=rev-discovery-auth"
       - "traefik.http.middlewares.rev-discovery-auth.basicauth.users=${DISCOVERY_USER}"
+  # api gateway
   gateway:
     image: ghcr.io/revature-reverse/gateway:latest
     labels:
       - "traefik.enable=true"
+      # this sets the gateway path to be on /backend
       - "traefik.http.routers.rev-gateway.rule=HostRegexp(`{host:.*}`) && PathPrefix(`/backend`)"
+      # the next two lines strip /backend from the path before it gets sent to the api gateway as it doesn't know it's going to be on /backend
       - "traefik.http.routers.rev-gateway.middlewares=rev-gateway-prefixes"
       - "traefik.http.middlewares.rev-gateway-prefixes.stripprefix.prefixes=/backend"
     environment:
       EUREKA_URI: 'http://discovery:8083/eureka'
     depends_on:
       - discovery
+  # user service
   user-service:
     image: ghcr.io/revature-reverse/user-service:latest
     restart: unless-stopped
@@ -39,6 +48,7 @@ services:
       EUREKA_URI: 'http://discovery:8083/eureka'
     depends_on:
       - discovery
+  # post service
   post-service:
     image: ghcr.io/revature-reverse/post-service:latest
     restart: unless-stopped
@@ -52,6 +62,7 @@ services:
       VALIDATION: 'http://user-service:8081/users/validate'
     depends_on:
       - discovery
+  # reverse proxy using traefik
   proxy:
     image: traefik
     restart: unless-stopped
@@ -62,42 +73,4 @@ services:
     ports:
       - "80:80"
       - "443:443"
-#  elasticsearch:
-#    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
-#    restart: unless-stopped
-#    volumes:
-#      - './logging/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro'
-#      - 'elasticsearch:/usr/share/elasticsearch/data'
-#    environment:
-#      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-#      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
-      # Use single node discovery in order to disable production mode and avoid bootstrap checks.
-      # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
-#      discovery.type: single-node
-#  kibana:
-#    image: docker.elastic.co/kibana/kibana:${ELASTIC_VERSION}
-#    restart: unless-stopped
-#    volumes:
-#      - './logging/kibana.yml:/usr/share/kibana/config/kibana.yml:ro'
-#    environment:
-#      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
-#    ports:
-#      - "5601:5601"
-#  filebeat:
-#    build: 
-#      context: 'filebeat'
-#      args:
-#        ELASTIC_VERSION: ${ELASTIC_VERSION}
-    # image: docker.elastic.co/beats/filebeat:${ELASTIC_VERSION}
-#    user: '0'
-#    restart: unless-stopped
-#    volumes:
-      # - './logging/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro'
-#      - "/var/lib/docker/containers:/var/lib/docker/containers:ro"
-#      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-#    environment:
-#      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
-    
 
-volumes:
-  elasticsearch: {}
