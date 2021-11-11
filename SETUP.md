@@ -46,7 +46,14 @@ This is the secret key for your s3 bucket
 
 # Running the project
 
-To run the project all you need to do is run docker compose
+To run the project all you need to do is clone the repository and then run docker compose
+
+cloning the repo:
+```
+git clone https://github.com/Revature-Reverse/Assets.git && cd Assets
+```
+
+and then run docker compose
 
 ```
 docker-compose --env-file </path/to/envfile.env> up -d
